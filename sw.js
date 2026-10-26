@@ -1,4 +1,4 @@
-var CACHE = 'geograf-v2.4-pwa';
+var CACHE = 'geograf-v2.5-fixpages';
 var FILES = [
   './',
   './index.html',
