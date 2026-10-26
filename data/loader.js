@@ -2,7 +2,7 @@
   'use strict';
 
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/data/countries.json', true);
+  xhr.open('GET', './data/countries.json', true);
 
   xhr.onload = function () {
     if (xhr.status === 200 || xhr.status === 0) {
