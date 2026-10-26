@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📔 Дневник</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="stylesheet" href="../../css/flags.css">
+<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();
+  // Гео-факт дня
+  if (window.OTD_GEO_FACT_OF_DAY) {
+    document.getElementById('fact-text').textContent = window.OTD_GEO_FACT_OF_DAY.get();
+    var stats = GEO_STORE.getStats();
+    var today = new Date().toDateString();
+    if (stats.lastFactDate !== today) {
+      stats.factsRead = (stats.factsRead || 0) + 1;
+      stats.lastFactDate = today;
+      GEO_STORE.saveStats(stats);
+      GEO_STORE.addXP(5);
+    }
+    document.getElementById('facts-read-count').textContent = stats.factsRead || 0;
+  }
+</script>
+<style>
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.ach-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 18px; opacity: .4; transition: .2s; position: relative; }
+.ach-card.unlocked { opacity: 1; border-color: var(--accent); background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
+[data-theme="dark"] .ach-card.unlocked { background: linear-gradient(135deg, #14532d, #166534); color: #dcfce7; }
+.ach-card.unlocked::after { content: '✅'; position: absolute; top: 10px; right: 12px; font-size: 1.4rem; }
+.ach-card h4 { margin: 0 0 6px; font-size: 1.05rem; }
+.ach-card .desc { font-size: .9rem; margin-bottom: 8px; opacity: .85; }
+.ach-card .xp { font-size: .85rem; font-weight: 800; color: var(--accent); }
+.ach-card.unlocked .xp { color: #166534; }
+[data-theme="dark"] .ach-card.unlocked .xp { color: #dcfce7; }
+.progress-item { margin-bottom: 14px; }
+.progress-item .head { display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 700; }
+.progress-bar { height: 10px; background: var(--bg-soft); border-radius: 5px; overflow: hidden; }
+.progress-bar > div { height: 100%; background: linear-gradient(90deg, var(--accent), #22d3ee); transition: width .8s; }
+.discovered-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.disc-chip { padding: 8px 14px; background: var(--accent); color: #fff; border-radius: 20px; font-size: .9rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.empty { text-align: center; padding: 30px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+  <a href="../../index.html" class="btn btn-outline">← На главную</a>
+  <h2>📔 Дневник</h2>
+</div>
+
+<div class="stats-bar">
+  <div class="stat">⭐ Уровень <span id="s-level">1</span></div>
+  <div class="stat">✨ <span id="s-xp">0</span> XP</div>
+  <div class="stat">🌍 <span id="s-disc">0</span> / <span id="s-total">0</span></div>
+  <div class="stat">🎮 <span id="s-quiz">0</span> квизов</div>
+  <div class="stat">🔥 <span id="s-streak">0</span> дн.</div>
+</div>
+
+<div class="card">
+  <h3>📊 Прогресс по континентам</h3>
+  <div id="progress"></div>
+</div>
+
+<div class="card">
+  <h3>🌍 Открытые страны (<span id="disc-count">0</span>)</h3>
+  <div id="disc-list" class="discovered-list"></div>
+</div>
+
+<div class="card">
+  <h3>🏆 Достижения (<span id="ach-count">0</span>)</h3>
+  <div id="ach-grid" class="ach-grid"></div>
+</div>
+</div>
+
+<script src="../../core/registry.js"></script>
+<script src="../../core/store.js"></script>
+<script src="../../data/loader.js"></script>
+<script>
+window.GEO_ON_LOADED = render;
+
+function render() {
+  var s = window.GEO_STORE.getStats();
+  var discList = window.GEO_STORE.getDiscovered();
+
+  document.getElementById('s-level').textContent = s.level || 1;
+  document.getElementById('s-xp').textContent = s.xp || 0;
+  document.getElementById('s-disc').textContent = discList.length;
+  document.getElementById('s-total').textContent = window.GEO_COUNT();
+  document.getElementById('s-quiz').textContent = s.quizzes || 0;
+  document.getElementById('s-streak').textContent = s.streak || 0;
+
+  // Прогресс по континентам
+  var conts = window.GEO_GET_CONTINENTS();
+  var html = conts.map(function (c) {
+    var total = window.GEO_GET_ALL().filter(function (x) { return x.continent === c; }).length;
+    var disc = window.GEO_GET_ALL().filter(function (x) { return x.continent === c && window.GEO_STORE.isDiscovered(x.id); }).length;
+    var pct = Math.round(disc / total * 100);
+    return '<div class="progress-item">' +
+      '<div class="head"><span>' + c + '</span><span>' + disc + ' / ' + total + ' (' + pct + '%)</span></div>' +
+      '<div class="progress-bar"><div style="width:' + pct + '%"></div></div>' +
+      '</div>';
+  }).join('');
+  document.getElementById('progress').innerHTML = html;
+
+  // Открытые страны
+  document.getElementById('disc-count').textContent = discList.length;
+  if (discList.length === 0) {
+    document.getElementById('disc-list').innerHTML = '<div class="empty">🌍 Пока пусто. Открой первую страну в Справочнике!</div>';
+  } else {
+    document.getElementById('disc-list').innerHTML = discList.map(function (id) {
+      var c = window.GEO_GET(id);
+      if (!c) return '';
+      return '<span class="disc-chip"><img class="flag-icon" src="../../assets/flags/' + c.id + '.svg" alt="">' + c.name + '</span>';
+    }).join('');
+  }
+
+  // Достижения
+  var unlocked = s.achievements || [];
+  document.getElementById('ach-count').textContent = unlocked.length + ' / ' + Object.keys(window.GEO_STORE.ACHIEVEMENTS).length;
+  var h = Object.keys(window.GEO_STORE.ACHIEVEMENTS).map(function (id) {
+    var a = window.GEO_STORE.ACHIEVEMENTS[id];
+    var isU = unlocked.indexOf(id) !== -1;
+    return '<div class="ach-card' + (isU ? ' unlocked' : '') + '">' +
+      '<h4>' + (isU ? '' : '🔒 ') + a.title + '</h4>' +
+      '<div class="desc">' + a.desc + '</div>' +
+      (a.xp > 0 ? '<div class="xp">+' + a.xp + ' XP</div>' : '') +
+      '</div>';
+  }).join('');
+  document.getElementById('ach-grid').innerHTML = h;
+}
+</script>
+</body>
+</html>

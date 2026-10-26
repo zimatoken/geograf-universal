@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 Справочник</title><link rel="stylesheet" href="../../css/styles.css">
+<link rel="stylesheet" href="../../css/flags.css">
+<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+<style>
+.grid-c{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.2s}
+.cc:hover{transform:translateY(-3px);box-shadow:0 10px 20px -5px rgba(0,0,0,.12);border-color:var(--accent)}
+.cc.disc{border-left:5px solid var(--success)}
+.cf{font-size:3rem;margin-bottom:8px}
+.cn{font-weight:800;font-size:1.15rem;margin-bottom:4px}
+.cc-c{color:var(--muted);font-size:.9rem;margin-bottom:8px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:20px}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.8);display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.modal.open{display:flex}
+.mb{background:var(--card);border-radius:16px;max-width:720px;width:100%;padding:28px;margin:40px auto}
+.sh{font-size:1.15rem;font-weight:800;color:var(--accent);margin:20px 0 10px;border-bottom:2px solid var(--accent);padding-bottom:4px}
+.fl{font-size:5rem;text-align:center;margin-bottom:12px}
+.country-flag{width:44px;height:30px;object-fit:cover;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.2);vertical-align:middle}
+.country-flag-lg{width:90px;height:62px;object-fit:cover;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.fi{padding:10px 12px;background:var(--bg-soft);border-radius:8px;margin-bottom:6px;border-left:4px solid var(--accent)}
+.db{background:#fee2e2;color:#991b1b;padding:14px;border-radius:10px;margin-top:12px;font-weight:600}
+[data-theme="dark"] .db{background:#7f1d1d;color:#fecaca}
+</style></head><body>
+<div class="container">
+<div class="header"><a href="../../index.html" class="btn btn-outline">← Назад</a><h2>📖 Справочник</h2></div>
+<div class="filters">
+<input type="text" id="search" placeholder="Поиск...">
+<select id="fc"><option value="">Все континенты</option></select>
+<select id="fd"><option value="">Любая сложность</option><option value="easy">😊 Легко</option><option value="medium">🤔 Средне</option><option value="hard">💪 Сложно</option></select>
+</div>
+<p id="ci" style="color:var(--muted);font-size:.9rem;margin:0 0 12px;"></p>
+<div id="grid" class="grid-c"></div>
+</div>
+<div class="modal" id="modal" onclick="closeM(event)"><div class="mb" id="mb" onclick="event.stopPropagation()"></div></div>
+<script src="../../core/registry.js"></script>
+<script src="../../core/store.js"></script>
+<script src="../../data/loader.js"></script>
+<script src="../../data/quiz_data_extended.js"></script>
+<script>
+window.GEO_ON_LOADED = initPage;
+
+function initPage() {
+  var conts = window.GEO_GET_CONTINENTS();
+  conts.forEach(function (c) {
+    var o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    document.getElementById('fc').appendChild(o);
+  });
+  document.getElementById('search').addEventListener('input', render);
+  document.getElementById('fc').addEventListener('change', render);
+  document.getElementById('fd').addEventListener('change', render);
+  render();
+}
+
+function normalizeDifficulty(value) {
+  var levels = {
+    easy: 'easy', 'легко': 'easy',
+    medium: 'medium', 'средне': 'medium',
+    hard: 'hard', 'сложно': 'hard'
+  };
+  return levels[String(value || '').toLowerCase()] || '';
+}
+
+function difficultyLabel(value) {
+  var labels = { easy: '😊 Легко', medium: '🤔 Средне', hard: '💪 Сложно' };
+  return labels[normalizeDifficulty(value)] || '—';
+}
+
+function flagMarkup(country, className) {
+  return '<img class="' + className + '" src="../../assets/flags/' + country.id + '.svg" alt="' +
+    country.name + '" data-fallback="' + (country.flag || '🏳️') + '">';
+}
+
+function attachFlagFallbacks(root) {
+  root.querySelectorAll('img[data-fallback]').forEach(function (img) {
+    img.addEventListener('error', function () {
+      img.parentNode.replaceChild(document.createTextNode(img.getAttribute('data-fallback')), img);
+    }, { once: true });
+  });
+}
+
+function render() {
+  var s = document.getElementById('search').value;
+  var c = document.getElementById('fc').value;
+  var d = document.getElementById('fd').value;
+  var list = window.GEO_FILTER({ search: s || undefined, continent: c || undefined });
+  if (d) list = list.filter(function (country) { return normalizeDifficulty(country.difficulty) === d; });
+  document.getElementById('ci').textContent = 'Найдено: ' + list.length + ' из ' + window.GEO_GET_ALL().length + ' · Открыто: ' + window.GEO_STORE.getDiscovered().length;
+  var grid = document.getElementById('grid');
+  if (!list.length) { grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;">Ничего не найдено</p>'; return; }
+  grid.innerHTML = list.map(function (x) {
+    var disc = window.GEO_STORE.isDiscovered(x.id);
+    return '<div class="cc' + (disc ? ' disc' : '') + '" onclick="openC(\'' + x.id + '\')">' +
+      '<div class="cf">' + flagMarkup(x, 'country-flag') + '</div>' +
+      '<div class="cn">' + x.name + (disc ? ' ✅' : '') + '</div>' +
+      '<div class="cc-c">🏛️ ' + x.capital + '</div>' +
+      '<div style="font-size:.85rem;color:var(--muted);">👥 ' + x.population + ' · 📍 ' + x.continent + '</div>' +
+      '<div style="margin-top:8px;"><span class="badge">' + difficultyLabel(x.difficulty) + '</span></div></div>';
+  }).join('');
+  attachFlagFallbacks(grid);
+}
+
+function openC(id) {
+  var c = window.GEO_GET(id);
+  if (!c) return;
+  var disc = window.GEO_STORE.isDiscovered(id);
+  var currencyData = window.OTD_GEO_CURRENCIES && window.OTD_GEO_CURRENCIES[id];
+  var currency = (currencyData && currencyData.currency) || c.currency || '—';
+  var language = (window.OTD_GEO_LANGUAGES && window.OTD_GEO_LANGUAGES[id]) || c.language || '—';
+  var relief = c.relief || c.terrain || '—';
+  var h = '<div style="display:flex;justify-content:space-between;margin-bottom:12px;">' +
+    '<button onclick="closeM()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text);">✕</button>' +
+    '<span class="badge">' + difficultyLabel(c.difficulty) + '</span></div>';
+  h += '<div class="fl">' + flagMarkup(c, 'country-flag-lg') + '</div>';
+  h += '<h2 style="text-align:center;margin:0 0 16px;">' + c.name + '</h2>';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">' +
+    '<div style="padding:10px;background:var(--bg-soft);border-radius:8px;"><b>🏛️ Столица:</b> ' + c.capital + '</div>' +
+    '<div style="padding:10px;background:var(--bg-soft);border-radius:8px;"><b>👥 Население:</b> ' + c.population + '</div>' +
+    '<div style="padding:10px;background:var(--bg-soft);border-radius:8px;"><b>📍 Площадь:</b> ' + c.area + '</div>' +
+    '<div style="padding:10px;background:var(--bg-soft);border-radius:8px;"><b>💰 Валюта:</b> ' + currency + '</div>' +
+    '<div style="padding:10px;background:var(--bg-soft);border-radius:8px;"><b>🗣️ Язык:</b> ' + language + '</div>' +
+    '<div style="padding:10px;background:var(--bg-soft);border-radius:8px;"><b>🌡️ Климат:</b> ' + c.climate + '</div>' +
+    '</div>';
+  h += '<div class="sh">🏔️ Рельеф</div><div style="padding:12px;background:var(--bg-soft);border-radius:8px;">' + relief + '</div>';
+  h += '<div class="sh">💡 Факты</div>';
+  (Array.isArray(c.facts) ? c.facts : []).forEach(function (f) { h += '<div class="fi">• ' + f + '</div>'; });
+  h += '<div class="db">⚠️ Опасности: ' + c.danger + '</div>';
+  if (!disc) h += '<button class="btn btn-block" style="margin-top:20px;" onclick="disc(\'' + id + '\')">✅ Открыть (+10 XP)</button>';
+  else h += '<div style="text-align:center;color:var(--success);font-weight:700;margin-top:20px;">✅ Открыта</div>';
+  document.getElementById('mb').innerHTML = h;
+  attachFlagFallbacks(document.getElementById('mb'));
+  document.getElementById('modal').classList.add('open');
+}
+
+function disc(id) {
+  if (window.GEO_STORE.discover(id)) {
+    alert('🌍 ' + window.GEO_GET(id).name + ' открыта! +10 XP');
+    closeM();
+    render();
+  }
+}
+
+function closeM(e) { if (e && e.target !== e.currentTarget) return; document.getElementById('modal').classList.remove('open'); }
+</script></body></html>

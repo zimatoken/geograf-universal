@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚙️ Настройки</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+<style>
+.section-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
+.section-row:last-child { border-bottom: none; }
+.section-row .lbl { flex: 1; min-width: 200px; }
+.section-row .lbl .name { font-weight: 700; margin-bottom: 4px; font-size: 1.05rem; }
+.section-row .lbl .hint { font-size: .85rem; color: var(--muted); }
+.about { text-align: center; padding: 30px 20px; }
+.about .logo { font-size: 4rem; margin-bottom: 12px; }
+.about .title { font-size: 1.4rem; font-weight: 900; margin-bottom: 6px; }
+.about .version { color: var(--accent); font-weight: 700; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+  <a href="../../index.html" class="btn btn-outline">← На главную</a>
+  <h2>⚙️ Настройки</h2>
+</div>
+
+<div class="card">
+  <h3>🌓 Внешний вид</h3>
+  <div class="section-row">
+    <div class="lbl"><div class="name">Тёмная тема</div><div class="hint">Комфорт для глаз вечером</div></div>
+    <button class="btn" onclick="GEO_THEME.toggle()">🌓 Переключить</button>
+  </div>
+</div>
+
+<div class="card">
+  <h3>💾 Мои данные</h3>
+  <div class="section-row">
+    <div class="lbl"><div class="name">Экспорт прогресса</div><div class="hint">Скачай JSON со статистикой, открытыми странами, достижениями</div></div>
+  </div>
+  <button class="btn btn-block" style="margin-top:10px;" onclick="exportData()">📤 Экспорт JSON</button>
+  <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="importData()">📥 Импорт JSON</button>
+</div>
+
+<div class="card" style="border-left:5px solid #dc2626;">
+  <h3 style="color:#dc2626;">🗑 Опасная зона</h3>
+  <div class="section-row">
+    <div class="lbl"><div class="name">Полный сброс</div><div class="hint">Удалит ВСЁ: XP, уровни, открытые страны, достижения, квизы</div></div>
+  </div>
+  <button class="btn btn-block" style="margin-top:10px; background:#dc2626;" onclick="resetAll()">🗑 Удалить все данные</button>
+</div>
+
+<div class="card about">
+  <div class="logo">🌍</div>
+  <div class="title">Я в натуре Географ</div>
+  <div class="version">v2.0 Turbo Edition</div>
+  <div style="font-size:.9rem; color:var(--muted);">
+    50 стран · 4 типа квизов · 22 достижения · 100 фактов
+  </div>
+  <div style="margin-top:16px; font-size:.85rem; color:var(--muted);">
+    Максим + Turbo ZX = Экосистема «Я в натуре...»
+  </div>
+</div>
+</div>
+
+<script src="../../core/registry.js"></script>
+<script src="../../core/store.js"></script>
+<script src="../../core/theme.js"></script>
+<script src="../../data/loader.js"></script>
+<script>
+function exportData() {
+  var data = {
+    version: 'geograf-v2.0',
+    exportDate: new Date().toISOString(),
+    stats: window.GEO_STORE.getStats(),
+    discovered: window.GEO_STORE.getDiscovered()
+  };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'geograf-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert('✅ Экспорт готов!');
+}
+
+function importData() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (data.stats) localStorage.setItem('geo_stats_v2', JSON.stringify(data.stats));
+        if (data.discovered) localStorage.setItem('geo_discovered_v2', JSON.stringify(data.discovered));
+        alert('✅ Импорт успешен! Перезагрузка...');
+        setTimeout(function () { location.reload(); }, 1000);
+      } catch (err) {
+        alert('❌ Ошибка: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function resetAll() {
+  if (!confirm('⚠️ Удалить ВСЕ данные?
+
+XP, страны, достижения — всё будет стёрто.')) return;
+  if (!confirm('Точно? Это необратимо!')) return;
+  localStorage.removeItem('geo_stats_v2');
+  localStorage.removeItem('geo_discovered_v2');
+  alert('✅ Данные удалены. Перезагрузка...');
+  location.reload();
+}
+</script>
+</body>
+</html>

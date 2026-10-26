@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌍 Я в натуре Географ</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/styles.css">
+<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1 style="background: linear-gradient(135deg, #10b981, #00b8d9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🌍 Я в натуре Географ</h1>
+    <button class="btn btn-outline" onclick="GEO_THEME.toggle()">🌓</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">⭐ Уровень <span id="s-level">1</span></div>
+    <div class="stat">✨ <span id="s-xp">0</span> XP</div>
+    <div class="stat">🌍 <span id="s-disc">0</span> / <span id="s-total">100</span></div>
+    <div class="stat">🔥 <span id="s-streak">0</span> дн.</div>
+  </div>
+
+  <div class="card" style="border-left:5px solid var(--accent);">
+    <h2 style="margin-top:0;">Привет, путешественник! 🌍</h2>
+    <p>Открой 100 стран мира, изучи их культуру, природу и опасности.</p>
+  </div>
+
+  
+  <div id="fact-of-day" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 16px; padding: 24px; margin-bottom: 24px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+      <div style="font-size: 2rem;">💡</div>
+      <div style="font-weight: 700; font-size: 1.1rem;">Гео-факт дня</div>
+    </div>
+    <div id="fact-text" style="font-size: 1.05rem; line-height: 1.6;">Загрузка...</div>
+    <button onclick="nextFact()" style="margin-top: 14px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">🎲 Другой факт</button>
+    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 8px;">Прочитано: <span id="facts-counter">0</span> / 100</div>
+  </div>
+
+  <script>
+    function nextFact() {
+      var fact = window.OTD_GEO_FACT_OF_DAY.getRandom();
+      document.getElementById('fact-text').textContent = fact;
+      var read = JSON.parse(localStorage.getItem('otd_geo_facts_read') || '[]');
+      if (read.indexOf(fact) === -1) {
+        read.push(fact);
+        localStorage.setItem('otd_geo_facts_read', JSON.stringify(read));
+        if (window.OTD_IDENTITY) window.OTD_IDENTITY.addXP(5);
+      }
+      document.getElementById('facts-counter').textContent = read.length;
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('fact-text').textContent = window.OTD_GEO_FACT_OF_DAY.get();
+      var read = JSON.parse(localStorage.getItem('otd_geo_facts_read') || '[]');
+      document.getElementById('facts-counter').textContent = read.length;
+    });
+  </script>
+
+  <div class="grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px;">
+    <a href="modules/encyclopedia/index.html" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:24px 16px; background:#1e293b; border:2px solid #334155; border-radius:16px; color:#f1f5f9; text-decoration:none; transition:.2s;" onmouseover="this.style.borderColor='#00b8d9'" onmouseout="this.style.borderColor='#334155'">
+      <span style="font-size:2rem;">📖</span>
+      <span style="font-weight:700;">Справочник</span>
+    </a>
+    <a href="modules/quiz/index.html" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:24px 16px; background:#1e293b; border:2px solid #334155; border-radius:16px; color:#f1f5f9; text-decoration:none; transition:.2s;" onmouseover="this.style.borderColor='#00b8d9'" onmouseout="this.style.borderColor='#334155'">
+      <span style="font-size:2rem;">🎮</span>
+      <span style="font-weight:700;">Квизы</span>
+    </a>
+    <a href="modules/map/index.html" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:24px 16px; background:#1e293b; border:2px solid #334155; border-radius:16px; color:#f1f5f9; text-decoration:none; transition:.2s;" onmouseover="this.style.borderColor='#00b8d9'" onmouseout="this.style.borderColor='#334155'">
+      <span style="font-size:2rem;">🗺️</span>
+      <span style="font-weight:700;">Карта</span>
+    </a>
+    <a href="modules/journal/index.html" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:24px 16px; background:#1e293b; border:2px solid #334155; border-radius:16px; color:#f1f5f9; text-decoration:none; transition:.2s;" onmouseover="this.style.borderColor='#00b8d9'" onmouseout="this.style.borderColor='#334155'">
+      <span style="font-size:2rem;">📔</span>
+      <span style="font-weight:700;">Дневник</span>
+    </a>
+    <a href="modules/settings/index.html" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:24px 16px; background:transparent; border:2px solid #00b8d9; border-radius:16px; color:#00b8d9; text-decoration:none; transition:.2s;" onmouseover="this.style.background='#00b8d920'" onmouseout="this.style.background='transparent'">
+      <span style="font-size:2rem;">⚙️</span>
+      <span style="font-weight:700;">Настройки</span>
+    </a>
+  </div>
+
+  <div class="card">
+    <h3>🌍 Континенты</h3>
+    <div id="continents-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="core/registry.js"></script>
+<script src="core/store.js"></script>
+<script src="core/theme.js"></script>
+<script src="data/loader.js"></script>
+<script>
+window.GEO_ON_LOADED = function () {
+  console.log('✅ ФИНАЛЬНАЯ ПРОВЕРКА: стран =', window.GEO_COUNT());
+  var s = window.GEO_STORE.getStats();
+  document.getElementById('s-level').textContent = s.level || 1;
+  document.getElementById('s-xp').textContent = s.xp || 0;
+  document.getElementById('s-disc').textContent = window.GEO_STORE.getDiscovered().length;
+  document.getElementById('s-total').textContent = window.GEO_COUNT();
+  document.getElementById('s-streak').textContent = s.streak || 0;
+
+  var conts = window.GEO_GET_CONTINENTS();
+  var html = conts.map(function (c) {
+    var total = window.GEO_GET_ALL().filter(function (x) { return x.continent === c; }).length;
+    var disc = window.GEO_GET_ALL().filter(function (x) { return x.continent === c && window.GEO_STORE.isDiscovered(x.id); }).length;
+    var pct = Math.round(disc / total * 100);
+    return '<div style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+      '<span>' + c + '</span><b>' + disc + ' / ' + total + '</b></div>' +
+      '<div class="progress-bar"><div style="width:' + pct + '%"></div></div>' +
+      '</div>';
+  }).join('');
+  document.getElementById('continents-list').innerHTML = html;
+};
+</script>
+<script src="data/facts.js"></script>
+<script src="data/achievements_extended.js"></script>
+</body>
+</html>

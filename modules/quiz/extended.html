@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎯 Дополнительные квизы</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<style>
+.quiz-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.quiz-type { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 24px; cursor: pointer; text-align: center; transition: .2s; overflow: hidden; }
+.quiz-type:hover { transform: translateY(-4px); border-color: var(--accent); }
+.quiz-type.active { border-color: var(--accent); background: rgba(0, 184, 217, 0.15); }
+.quiz-icon { font-size: 3rem; margin-bottom: 12px; }
+.quiz-name { font-weight: 700; font-size: 1.1rem; word-break: break-word; }
+.quiz-desc { font-size: 0.85rem; color: var(--muted); margin-top: 6px; word-break: break-word; }
+.quiz-question { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; margin-bottom: 20px; }
+.quiz-flag { font-size: 6rem; margin: 16px 0; display: flex; justify-content: center; align-items: center; min-height: 140px; }
+.quiz-flag img { max-width: 100%; height: auto; }
+.quiz-prompt { font-size: 1.1rem; color: var(--muted); margin-bottom: 12px; }
+.quiz-answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.quiz-answer { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; font-weight: 600; transition: .2s; word-break: break-word; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 60px; }
+.quiz-answer:hover { border-color: var(--accent); }
+.quiz-answer.correct { background: #dcfce7; border-color: #16a34a; color: #166534; }
+.quiz-answer.wrong { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+.quiz-stats { display: flex; gap: 16px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+.quiz-stat { background: var(--card); padding: 12px 20px; border-radius: 10px; text-align: center; min-width: 100px; }
+.quiz-stat-num { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+.quiz-stat-lbl { font-size: 0.8rem; color: var(--muted); }
+</style>
+<script>
+(function(){
+  var t = localStorage.getItem('ecosystem_theme_universal_v2') || localStorage.getItem('otd_theme');
+  if (t === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <a href="../../index.html" class="btn btn-outline">← На главную</a>
+    <h2>🎯 Дополнительные квизы</h2>
+  </div>
+
+  <div class="card" style="border-left: 5px solid var(--accent);">
+    <p style="font-size: 1rem; font-style: italic; margin: 0;">Проверь знания 4 новых типов: валюта, язык, животное, достопримечательность.</p>
+  </div>
+
+  <div class="quiz-types" id="quiz-types"></div>
+
+  <div id="quiz-area"></div>
+
+  <div class="quiz-stats">
+    <div class="quiz-stat"><div class="quiz-stat-num" id="stat-quizzes">0</div><div class="quiz-stat-lbl">Квизов пройдено</div></div>
+    <div class="quiz-stat"><div class="quiz-stat-num" id="stat-perfect">0</div><div class="quiz-stat-lbl">Идеальных</div></div>
+    <div class="quiz-stat"><div class="quiz-stat-num" id="stat-correct">0</div><div class="quiz-stat-lbl">Верных</div></div>
+  </div>
+</div>
+
+<script src="../../core/theme.js"></script>
+<script src="../../core/identity.js"></script>
+<script src="../../core/chronicle.js"></script>
+<script src="../../data/quiz_data_extended.js"></script>
+<script src="../../data/countries.json"></script>
+<script>
+var TYPES = [
+  {id:'currency', icon:'💰', name:'Угадай валюту', desc:'Какая валюта в стране?'},
+  {id:'language', icon:'🗣️', name:'Угадай язык', desc:'На каком языке говорят?'},
+  {id:'animal', icon:'🦁', name:'Животное-символ', desc:'Какое животное символ?'},
+  {id:'landmark', icon:'🏛️', name:'Достопримечательность', desc:'Где это находится?'}
+];
+
+var currentType = null;
+var currentQuestion = null;
+
+function renderTypes() {
+  document.getElementById('quiz-types').innerHTML = TYPES.map(function(t) {
+    return '<div class="quiz-type ' + (currentType === t.id ? 'active' : '') + '" onclick="startType(\'' + t.id + '\')">' +
+      '<div class="quiz-icon">' + t.icon + '</div>' +
+      '<div class="quiz-name">' + t.name + '</div>' +
+      '<div class="quiz-desc">' + t.desc + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function startType(type) {
+  currentType = type;
+  renderTypes();
+  nextQuestion();
+}
+
+function getCountryKeys() {
+  return Object.keys(window.OTD_GEO_CURRENCIES || {});
+}
+
+function getAnswerValue(key, type) {
+  if (type === 'currency') {
+    return window.OTD_GEO_CURRENCIES[key] && window.OTD_GEO_CURRENCIES[key].currency;
+  }
+  if (type === 'language') return window.OTD_GEO_LANGUAGES[key];
+  if (type === 'animal') return window.OTD_GEO_ANIMALS[key] && window.OTD_GEO_ANIMALS[key].animal;
+  if (type === 'landmark') return window.OTD_GEO_LANDMARKS[key] && window.OTD_GEO_LANDMARKS[key].landmark;
+  return '';
+}
+
+function nextQuestion() {
+  var keys = getCountryKeys().filter(function(key) { return getAnswerValue(key, currentType); });
+  var distinctAnswers = [];
+  keys.forEach(function(key) {
+    var value = getAnswerValue(key, currentType);
+    if (distinctAnswers.indexOf(value) === -1) distinctAnswers.push(value);
+  });
+  if (distinctAnswers.length < 4) {
+    currentQuestion = null;
+    document.getElementById('quiz-area').innerHTML = '<div class="quiz-question">Недостаточно данных для четырёх разных вариантов ответа.</div>';
+    return;
+  }
+
+  var correctKey = keys[Math.floor(Math.random() * keys.length)];
+  var wrongKeys = [];
+  var usedAnswers = [getAnswerValue(correctKey, currentType)];
+  var shuffledKeys = keys.filter(function(key) { return key !== correctKey; }).sort(function() { return Math.random() - 0.5; });
+  for (var i = 0; i < shuffledKeys.length && wrongKeys.length < 3; i++) {
+    var key = shuffledKeys[i];
+    var value = getAnswerValue(key, currentType);
+    if (usedAnswers.indexOf(value) === -1) {
+      wrongKeys.push(key);
+      usedAnswers.push(value);
+    }
+  }
+  if (wrongKeys.length < 3) {
+    currentQuestion = null;
+    document.getElementById('quiz-area').innerHTML = '<div class="quiz-question">Недостаточно данных для четырёх разных вариантов ответа.</div>';
+    return;
+  }
+  var allKeys = [correctKey].concat(wrongKeys).sort(function() { return Math.random() - 0.5; });
+
+  var q = { correctKey: correctKey, allKeys: allKeys, type: currentType };
+  currentQuestion = q;
+
+  var c = window.OTD_GEO_CURRENCIES[correctKey];
+  var prompt = '';
+  
+  if (currentType === 'currency') {
+    prompt = 'Какая валюта в стране ' + c.country + '?';
+  } else if (currentType === 'language') {
+    prompt = 'На каком языке говорят в ' + c.country + '?';
+  } else if (currentType === 'animal') {
+    prompt = 'Какое животное — символ ' + c.country + '?';
+  } else if (currentType === 'landmark') {
+    prompt = 'Какая достопримечательность в ' + c.country + '?';
+  }
+
+  var answersHtml = allKeys.map(function(k) {
+    var answer = getAnswerValue(k, currentType) || '—';
+    return '<div class="quiz-answer" onclick="answer(\'' + k + '\', this)">' + answer + '</div>';
+  }).join('');
+
+  document.getElementById('quiz-area').innerHTML =
+    '<div class="quiz-question">' +
+      '<div class="quiz-prompt">' + prompt + '</div>' +
+      '<div class="quiz-flag"><img src="../../assets/flags/' + correctKey + '.svg" alt="' + c.country + '" style="width: 120px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div>' +
+    '</div>' +
+    '<div class="quiz-answers">' + answersHtml + '</div>';
+}
+
+function answer(key, el) {
+  var correct = currentQuestion.correctKey === key;
+  var stats = JSON.parse(localStorage.getItem('otd_geo_quiz_stats') || '{"quizzes":0,"perfect":0,"correct":0,"total":0}');
+  stats.total += 1;
+  if (correct) {
+    stats.correct += 1;
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+  }
+  localStorage.setItem('otd_geo_quiz_stats', JSON.stringify(stats));
+  updateStats();
+  
+  if (window.OTD_IDENTITY) window.OTD_IDENTITY.addXP(correct ? 10 : 2);
+  if (window.OTD_CHRONICLE) window.OTD_CHRONICLE.add('🎯 Квиз: ' + (correct ? 'верно' : 'ошибка'));
+
+  setTimeout(function() {
+    if (correct) nextQuestion();
+    else nextQuestion();
+  }, 1200);
+}
+
+function updateStats() {
+  var stats = JSON.parse(localStorage.getItem('otd_geo_quiz_stats') || '{"quizzes":0,"perfect":0,"correct":0,"total":0}');
+  document.getElementById('stat-quizzes').textContent = stats.quizzes || 0;
+  document.getElementById('stat-perfect').textContent = stats.perfect || 0;
+  document.getElementById('stat-correct').textContent = stats.correct || 0;
+}
+
+renderTypes();
+updateStats();
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════════════
+   ФЛАГИ SVG (flagcdn.com / ISO 3166-1 alpha-2)
+   Работает ОФФЛАЙН после первой загрузки
+   ═══════════════════════════════════════════════════ */
+
+.flag {
+  display: inline-block;
+  width: 44px;
+  height: 30px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  vertical-align: middle;
+  margin-right: 6px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #e0e0e0;
+  flex-shrink: 0;
+}
+
+.flag-lg {
+  display: inline-block;
+  width: 90px;
+  height: 62px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  margin-bottom: 12px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #e0e0e0;
+}
+
+.flag-icon {
+  display: inline-block;
+  width: 44px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.flag-russia { background-image: url('../assets/flags/russia.svg'); }
+.flag-lg.flag-russia { background-image: url('../assets/flags/russia.svg'); }
+.flag-germany { background-image: url('../assets/flags/germany.svg'); }
+.flag-lg.flag-germany { background-image: url('../assets/flags/germany.svg'); }
+.flag-france { background-image: url('../assets/flags/france.svg'); }
+.flag-lg.flag-france { background-image: url('../assets/flags/france.svg'); }
+.flag-italy { background-image: url('../assets/flags/italy.svg'); }
+.flag-lg.flag-italy { background-image: url('../assets/flags/italy.svg'); }
+.flag-spain { background-image: url('../assets/flags/spain.svg'); }
+.flag-lg.flag-spain { background-image: url('../assets/flags/spain.svg'); }
+.flag-uk { background-image: url('../assets/flags/uk.svg'); }
+.flag-lg.flag-uk { background-image: url('../assets/flags/uk.svg'); }
+.flag-poland { background-image: url('../assets/flags/poland.svg'); }
+.flag-lg.flag-poland { background-image: url('../assets/flags/poland.svg'); }
+.flag-ukraine { background-image: url('../assets/flags/ukraine.svg'); }
+.flag-lg.flag-ukraine { background-image: url('../assets/flags/ukraine.svg'); }
+.flag-sweden { background-image: url('../assets/flags/sweden.svg'); }
+.flag-lg.flag-sweden { background-image: url('../assets/flags/sweden.svg'); }
+.flag-norway { background-image: url('../assets/flags/norway.svg'); }
+.flag-lg.flag-norway { background-image: url('../assets/flags/norway.svg'); }
+.flag-finland { background-image: url('../assets/flags/finland.svg'); }
+.flag-lg.flag-finland { background-image: url('../assets/flags/finland.svg'); }
+.flag-greece { background-image: url('../assets/flags/greece.svg'); }
+.flag-lg.flag-greece { background-image: url('../assets/flags/greece.svg'); }
+.flag-portugal { background-image: url('../assets/flags/portugal.svg'); }
+.flag-lg.flag-portugal { background-image: url('../assets/flags/portugal.svg'); }
+.flag-czech { background-image: url('../assets/flags/czech.svg'); }
+.flag-lg.flag-czech { background-image: url('../assets/flags/czech.svg'); }
+.flag-hungary { background-image: url('../assets/flags/hungary.svg'); }
+.flag-lg.flag-hungary { background-image: url('../assets/flags/hungary.svg'); }
+.flag-china { background-image: url('../assets/flags/china.svg'); }
+.flag-lg.flag-china { background-image: url('../assets/flags/china.svg'); }
+.flag-india { background-image: url('../assets/flags/india.svg'); }
+.flag-lg.flag-india { background-image: url('../assets/flags/india.svg'); }
+.flag-japan { background-image: url('../assets/flags/japan.svg'); }
+.flag-lg.flag-japan { background-image: url('../assets/flags/japan.svg'); }
+.flag-south_korea { background-image: url('../assets/flags/south_korea.svg'); }
+.flag-lg.flag-south_korea { background-image: url('../assets/flags/south_korea.svg'); }
+.flag-thailand { background-image: url('../assets/flags/thailand.svg'); }
+.flag-lg.flag-thailand { background-image: url('../assets/flags/thailand.svg'); }
+.flag-vietnam { background-image: url('../assets/flags/vietnam.svg'); }
+.flag-lg.flag-vietnam { background-image: url('../assets/flags/vietnam.svg'); }
+.flag-indonesia { background-image: url('../assets/flags/indonesia.svg'); }
+.flag-lg.flag-indonesia { background-image: url('../assets/flags/indonesia.svg'); }
+.flag-turkey { background-image: url('../assets/flags/turkey.svg'); }
+.flag-lg.flag-turkey { background-image: url('../assets/flags/turkey.svg'); }
+.flag-iran { background-image: url('../assets/flags/iran.svg'); }
+.flag-lg.flag-iran { background-image: url('../assets/flags/iran.svg'); }
+.flag-kazakhstan { background-image: url('../assets/flags/kazakhstan.svg'); }
+.flag-lg.flag-kazakhstan { background-image: url('../assets/flags/kazakhstan.svg'); }
+.flag-mongolia { background-image: url('../assets/flags/mongolia.svg'); }
+.flag-lg.flag-mongolia { background-image: url('../assets/flags/mongolia.svg'); }
+.flag-uae { background-image: url('../assets/flags/uae.svg'); }
+.flag-lg.flag-uae { background-image: url('../assets/flags/uae.svg'); }
+.flag-egypt { background-image: url('../assets/flags/egypt.svg'); }
+.flag-lg.flag-egypt { background-image: url('../assets/flags/egypt.svg'); }
+.flag-south_africa { background-image: url('../assets/flags/south_africa.svg'); }
+.flag-lg.flag-south_africa { background-image: url('../assets/flags/south_africa.svg'); }
+.flag-nigeria { background-image: url('../assets/flags/nigeria.svg'); }
+.flag-lg.flag-nigeria { background-image: url('../assets/flags/nigeria.svg'); }
+.flag-kenya { background-image: url('../assets/flags/kenya.svg'); }
+.flag-lg.flag-kenya { background-image: url('../assets/flags/kenya.svg'); }
+.flag-morocco { background-image: url('../assets/flags/morocco.svg'); }
+.flag-lg.flag-morocco { background-image: url('../assets/flags/morocco.svg'); }
+.flag-ethiopia { background-image: url('../assets/flags/ethiopia.svg'); }
+.flag-lg.flag-ethiopia { background-image: url('../assets/flags/ethiopia.svg'); }
+.flag-tanzania { background-image: url('../assets/flags/tanzania.svg'); }
+.flag-lg.flag-tanzania { background-image: url('../assets/flags/tanzania.svg'); }
+.flag-madagascar { background-image: url('../assets/flags/madagascar.svg'); }
+.flag-lg.flag-madagascar { background-image: url('../assets/flags/madagascar.svg'); }
+.flag-usa { background-image: url('../assets/flags/usa.svg'); }
+.flag-lg.flag-usa { background-image: url('../assets/flags/usa.svg'); }
+.flag-canada { background-image: url('../assets/flags/canada.svg'); }
+.flag-lg.flag-canada { background-image: url('../assets/flags/canada.svg'); }
+.flag-mexico { background-image: url('../assets/flags/mexico.svg'); }
+.flag-lg.flag-mexico { background-image: url('../assets/flags/mexico.svg'); }
+.flag-cuba { background-image: url('../assets/flags/cuba.svg'); }
+.flag-lg.flag-cuba { background-image: url('../assets/flags/cuba.svg'); }
+.flag-guatemala { background-image: url('../assets/flags/guatemala.svg'); }
+.flag-lg.flag-guatemala { background-image: url('../assets/flags/guatemala.svg'); }
+.flag-brazil { background-image: url('../assets/flags/brazil.svg'); }
+.flag-lg.flag-brazil { background-image: url('../assets/flags/brazil.svg'); }
+.flag-argentina { background-image: url('../assets/flags/argentina.svg'); }
+.flag-lg.flag-argentina { background-image: url('../assets/flags/argentina.svg'); }
+.flag-chile { background-image: url('../assets/flags/chile.svg'); }
+.flag-lg.flag-chile { background-image: url('../assets/flags/chile.svg'); }
+.flag-peru { background-image: url('../assets/flags/peru.svg'); }
+.flag-lg.flag-peru { background-image: url('../assets/flags/peru.svg'); }
+.flag-colombia { background-image: url('../assets/flags/colombia.svg'); }
+.flag-lg.flag-colombia { background-image: url('../assets/flags/colombia.svg'); }
+.flag-venezuela { background-image: url('../assets/flags/venezuela.svg'); }
+.flag-lg.flag-venezuela { background-image: url('../assets/flags/venezuela.svg'); }
+.flag-bolivia { background-image: url('../assets/flags/bolivia.svg'); }
+.flag-lg.flag-bolivia { background-image: url('../assets/flags/bolivia.svg'); }
+.flag-australia { background-image: url('../assets/flags/australia.svg'); }
+.flag-lg.flag-australia { background-image: url('../assets/flags/australia.svg'); }
+.flag-new_zealand { background-image: url('../assets/flags/new_zealand.svg'); }
+.flag-lg.flag-new_zealand { background-image: url('../assets/flags/new_zealand.svg'); }
+.flag-papua { background-image: url('../assets/flags/papua.svg'); }
+.flag-lg.flag-papua { background-image: url('../assets/flags/papua.svg'); }

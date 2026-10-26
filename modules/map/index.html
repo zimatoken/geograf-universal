@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗺️ Карта мира</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="stylesheet" href="../../css/flags.css">
+<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+<style>
+.continent-block { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+.ch { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+.ch h3 { margin: 0; color: var(--accent); font-size: 1.3rem; }
+.ch:hover h3 { text-decoration: underline; }
+.cr { display: none; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.cr.open { display: flex; }
+.chip { padding: 10px 16px; background: var(--bg-soft); border-radius: 24px; font-size: .95rem; cursor: pointer; transition: .2s; border: 2px solid transparent; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.chip:hover { border-color: var(--accent); transform: translateY(-2px); }
+.chip.disc { background: var(--accent); color: #fff; }
+.chip.disc .flag-icon { box-shadow: 0 0 0 2px rgba(255,255,255,.5); }
+.progress-bar { margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+  <a href="../../index.html" class="btn btn-outline">← На главную</a>
+  <h2>🗺️ Карта мира</h2>
+</div>
+<div class="card" style="border-left:5px solid var(--accent);">
+  <h3 style="margin-top:0;">🌍 6 континентов — нажми на название</h3>
+  <p style="color:var(--muted);margin:0;">Изученные страны — <b style="color:var(--accent);">синие</b></p>
+</div>
+<div id="map-content"></div>
+</div>
+
+<script src="../../core/registry.js"></script>
+<script src="../../core/store.js"></script>
+<script src="../../data/loader.js"></script>
+<script>
+window.GEO_ON_LOADED = render;
+
+function render() {
+  var map = window.GEO_GET_BY_CONTINENT();
+  var html = Object.keys(map).sort().map(function (cont) {
+    var countries = map[cont];
+    var disc = countries.filter(function (c) { return window.GEO_STORE.isDiscovered(c.id); }).length;
+    var pct = Math.round(disc / countries.length * 100);
+    var chips = countries.map(function (c) {
+      var isDisc = window.GEO_STORE.isDiscovered(c.id);
+      return '<span class="chip' + (isDisc ? ' disc' : '') + '" onclick="event.stopPropagation();openCountry(\'' + c.id + '\')"><img class="flag-icon" src="../../assets/flags/' + c.id + '.svg" alt="">' + c.name + (isDisc ? ' ✅' : '') + '</span>';
+    }).join('');
+    return '<div class="continent-block">' +
+      '<div class="ch" onclick="toggleCont(this)">' +
+      '<h3>' + cont + '</h3>' +
+      '<span class="badge">' + disc + ' / ' + countries.length + ' (' + pct + '%)</span>' +
+      '</div>' +
+      '<div class="progress-bar"><div style="width:' + pct + '%"></div></div>' +
+      '<div class="cr">' + chips + '</div>' +
+      '</div>';
+  }).join('');
+  document.getElementById('map-content').innerHTML = html;
+}
+
+function toggleCont(el) {
+  var row = el.parentElement.querySelector('.cr');
+  if (row) row.classList.toggle('open');
+}
+
+function openCountry(id) {
+  location.href = '../encyclopedia/index.html?country=' + id;
+}
+</script>
+</body>
+</html>
