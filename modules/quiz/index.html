@@ -36,7 +36,9 @@
 </style>
 <script>
 (function(){
-  var t = localStorage.getItem('ecosystem_theme_universal_v2') || localStorage.getItem('otd_theme');
+  var t = localStorage.getItem('ecosystem_theme_universal_v2') 
+       || localStorage.getItem('theme') 
+       || localStorage.getItem('otd_theme');
   if (t === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
   }

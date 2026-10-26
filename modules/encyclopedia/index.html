@@ -2,7 +2,16 @@
 <html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>📖 Справочник</title><link rel="stylesheet" href="../../css/styles.css">
 <link rel="stylesheet" href="../../css/flags.css">
-<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+<script>
+(function(){
+  var t = localStorage.getItem('ecosystem_theme_universal_v2') 
+       || localStorage.getItem('theme') 
+       || localStorage.getItem('otd_theme');
+  if (t === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
 <style>
 .grid-c{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.2s}

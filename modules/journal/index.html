@@ -40,6 +40,16 @@
 .disc-chip { padding: 8px 14px; background: var(--accent); color: #fff; border-radius: 20px; font-size: .9rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .empty { text-align: center; padding: 30px; color: var(--muted); }
 </style>
+<script>
+(function(){
+  var t = localStorage.getItem('ecosystem_theme_universal_v2') 
+       || localStorage.getItem('theme') 
+       || localStorage.getItem('otd_theme');
+  if (t === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
 </head>
 <body>
 <div class="container">

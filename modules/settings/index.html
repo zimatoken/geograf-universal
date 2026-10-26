@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⚙️ Настройки</title>
 <link rel="stylesheet" href="../../css/styles.css">
-<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+<script>
+(function(){
+  var t = localStorage.getItem('ecosystem_theme_universal_v2') 
+       || localStorage.getItem('theme') 
+       || localStorage.getItem('otd_theme');
+  if (t === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
 <style>
 .section-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
 .section-row:last-child { border-bottom: none; }

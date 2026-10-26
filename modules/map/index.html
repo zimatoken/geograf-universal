@@ -6,7 +6,16 @@
 <title>🗺️ Карта мира</title>
 <link rel="stylesheet" href="../../css/styles.css">
 <link rel="stylesheet" href="../../css/flags.css">
-<script>(function(){var t=localStorage.getItem('ecosystem_theme_universal_v2')||localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+<script>
+(function(){
+  var t = localStorage.getItem('ecosystem_theme_universal_v2') 
+       || localStorage.getItem('theme') 
+       || localStorage.getItem('otd_theme');
+  if (t === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
 <style>
 .continent-block { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
 .ch { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
