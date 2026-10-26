@@ -1,25 +1,24 @@
-var CACHE = 'geograf-v2.4-pwa'; // Обязательно подними версию, иначе телефон не увидит обновлений!
+var CACHE = 'geograf-v2.4-pwa';
 var FILES = [
   './',
   './index.html',
   './manifest.json',
   './css/styles.css',
-  './css/flags.css',                // Добавили стили флагов
+  './css/flags.css',
   './core/registry.js',
   './core/store.js',
   './core/theme.js',
   './data/countries.json',
   './data/loader.js',
-  './data/facts.js',                // Добавили факты дня
-  './data/achievements_extended.js',// Добавили достижения
-  './data/quiz_data_extended.js',   // Добавили данные для квизов
-  './modules/encyclopedia/index.html', // Добавили основные страницы
+  './data/facts.js',
+  './data/achievements_extended.js',
+  './data/quiz_data_extended.js',
+  './modules/encyclopedia/index.html',
   './modules/quiz/index.html',
   './modules/quiz/extended.html',
   './modules/map/index.html',
   './modules/journal/index.html',
   './modules/settings/index.html'
-  // SVG-флаги кэшируются автоматически при первом открытии (благодаря твоему fetch-обработчику)
 ];
 
 self.addEventListener('install', function (e) {
